@@ -19,6 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import pl.edu.pwr.KantorApp.model.Client;
 import pl.edu.pwr.KantorApp.model.Trade;
+import pl.edu.pwr.KantorApp.model.User;
 
 public class ClientRepository extends BaseRepository {
 
@@ -114,6 +115,17 @@ public class ClientRepository extends BaseRepository {
 		}
 
 		return false;
+	}
+	
+	public Client getClientByLogin(String login) {
+		List<Client> clients = getAllClients();
+		for (Client client : clients) {
+			if (login.equals(client.getLogin())) {
+				return client;
+			}
+		}
+		return null;
+
 	}
 
 	private String getClientFileName(UUID id) {

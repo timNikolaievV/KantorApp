@@ -20,7 +20,7 @@ public class BaseRepository {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return path + "\\src\\main\\resources\\" + dataPath;
+		return path + dataPath;
 	}
 
 }

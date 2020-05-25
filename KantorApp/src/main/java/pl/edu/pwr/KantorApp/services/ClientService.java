@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 import pl.edu.pwr.KantorApp.model.Trade;
+import pl.edu.pwr.KantorApp.model.User;
 import pl.edu.pwr.KantorApp.model.Client;
 import pl.edu.pwr.KantorApp.repository.ClientRepository;
+import pl.edu.pwr.KantorApp.repository.UserRepository;
 import pl.edu.pwr.KantorApp.utils.HttpConnection;
 
 public class ClientService {
@@ -19,14 +20,18 @@ public class ClientService {
 
 	public ClientService(ClientRepository rep) {
 		super();
-		this.rep = new ClientRepository("Data");
+		this.rep = rep;
 	}
 
 	public Client createClient(String login, String name, String surname, String emailAddress, String password) {
-//todo:Password limitations
+		Client clientCheck = rep.getClientByLogin(login);
+		if (clientCheck != null) {
+			return null;
+		}
 		Client client = new Client(login, name, surname, emailAddress, password, new HashMap<String, Double>(),
 				new ArrayList<Trade>());
 		return rep.saveClient(client);
+
 	}
 
 	public boolean deleteClient(Client client) {
@@ -38,7 +43,6 @@ public class ClientService {
 	}
 
 	public Trade createClientTrade(String currency1, String currency2, double amount1, UUID id) {
-		// TODO Auto-generated method stub
 		LocalDateTime tradeDate = LocalDateTime.now();
 		HttpConnection con = new HttpConnection();
 		double rate;
@@ -89,15 +93,12 @@ public class ClientService {
 
 		return false;
 	}
-/*
-	private void updateClientBalance(String currency, double amount, UUID id) {
-
-		Client client = rep.getClientById(id);
-		if (client != null) {
-			client.updateBalance(currency, amount);
-
-			rep.saveClient(client);
-		}
-	}
-	*/
+	/*
+	 * private void updateClientBalance(String currency, double amount, UUID id) {
+	 * 
+	 * Client client = rep.getClientById(id); if (client != null) {
+	 * client.updateBalance(currency, amount);
+	 * 
+	 * rep.saveClient(client); } }
+	 */
 }

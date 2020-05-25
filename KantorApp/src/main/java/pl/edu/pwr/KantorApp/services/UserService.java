@@ -17,10 +17,19 @@ public class UserService {
 
 	public UserService(ClientRepository rep) {
 		super();
-		this.rep = new ClientRepository("Data");
+		this.rep = rep;
 	}
 
 	public User logInUser(String login, String password) {
+		
+		if (login.equals("admin") && password.equals("admin")) {
+			String name = "";
+			String surname = "";
+			String emailAddress = "";
+			User admin = new User(login, name, surname, emailAddress, password);
+			
+			return admin;
+		}
 		List<Client> clients = rep.getAllClients();
 		for (Client client : clients) {
 			if (login.equals(client.getLogin()) && password.equals(client.getPassword())) {
@@ -32,7 +41,7 @@ public class UserService {
 	}
 
 	public double rightRate(String currency1, String currency2) {
-		
+
 		HttpConnection con = new HttpConnection();
 		double rate;
 		try {

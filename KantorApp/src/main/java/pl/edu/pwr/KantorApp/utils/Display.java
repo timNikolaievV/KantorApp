@@ -66,8 +66,10 @@ public class Display {
 
 		displayTitle("Admin");
 
-		System.out.print("2. Check my transactions\n");
-		System.out.print("3. List of all clients\n");
+		System.out.print("1. List of all clients\n");
+		System.out.print("2. Delete client\n");
+		System.out.print("3. Get transactions for date\n");
+
 
 		System.out.print("9. Check rates\n");
 		System.out.print("0. Exit");
@@ -96,9 +98,13 @@ public class Display {
 		emailAddress = inputLine("Enter Email Address: ");
 
 		Client client = clientService.createClient(login, name, surname, emailAddress, password);
+		if (client == null) {
+			displayDelimiter("Registering client failed try again");
 
-		displayDelimiter("Created User");
-		System.out.print(client.toString());
+		} else {
+			displayDelimiter("Created User");
+			System.out.print(client.toString());
+		}
 		displayDelimiter();
 	}
 
@@ -140,7 +146,7 @@ public class Display {
 		Client client = (Client) currentUser;
 		displayTitle("Trades");
 		for (Trade trade : client.getTrades()) {
-			System.out.print(trade.toString());
+			System.out.println(trade.toString());
 		}
 		displayDelimiter();
 
@@ -221,7 +227,7 @@ public class Display {
 		List<Client> clients = clientService.getAllClients();
 		displayDelimiter("All Users");
 		for (Client client : clients) {
-			System.out.print(client.toString());
+			System.out.println(client.toString());
 		}
 		displayDelimiter();
 

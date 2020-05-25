@@ -5,6 +5,7 @@ import pl.edu.pwr.KantorApp.utils.ConfigurationLoader;
 import java.io.IOException;
 import java.util.Scanner;
 
+import pl.edu.pwr.KantorApp.model.User;
 import pl.edu.pwr.KantorApp.repository.ClientRepository;
 import pl.edu.pwr.KantorApp.services.ClientService;
 import pl.edu.pwr.KantorApp.services.UserService;
@@ -35,34 +36,54 @@ public class CantorConsole {
 				break;
 			case 2:
 				display.displayUserLogin();
-				if (display.getCurrentUser() != null) {
-					do {
-						display.displayClientMenu();
-						System.out.printf("Enter value: \n");
-						value = scanner.nextInt();
+				User currentUser = display.getCurrentUser();
+				if (currentUser != null) {
+					if (currentUser.getLogin().equals("admin")) {
+						do {
+							display.displayAdminMenu();
+							System.out.printf("Enter value: \n");
+							value = scanner.nextInt();
 
-						switch (value) {
-						case 1:
-							display.diplayCurrentClientTrades();
-							break;
-						case 2:
-							display.displayAddTrade();
-							break;
-						case 3:
-							display.displayMyBalance();
-							break;
-						case 4:
-							display.displayWithdrawalClientBalance();
-							break;
-						case 5:
-							display.displayDepositClientBalance();
-							break;
-						case 9:
-							display.rightRate();
-							break;
+							switch (value) {
+							case 1:
+								display.displayAllClients();
+								break;
 
-						}
-					} while (value != 0);
+							case 9:
+								display.rightRate();
+								break;
+
+							}
+						} while (value != 0);
+					} else {
+						do {
+							display.displayClientMenu();
+							System.out.printf("Enter value: \n");
+							value = scanner.nextInt();
+
+							switch (value) {
+							case 1:
+								display.diplayCurrentClientTrades();
+								break;
+							case 2:
+								display.displayAddTrade();
+								break;
+							case 3:
+								display.displayMyBalance();
+								break;
+							case 4:
+								display.displayWithdrawalClientBalance();
+								break;
+							case 5:
+								display.displayDepositClientBalance();
+								break;
+							case 9:
+								display.rightRate();
+								break;
+
+							}
+						} while (value != 0);
+					}
 				}
 				break;
 
