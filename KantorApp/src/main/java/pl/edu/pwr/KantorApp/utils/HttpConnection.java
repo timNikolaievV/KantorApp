@@ -13,20 +13,25 @@ import java.net.URL;
 
 public class HttpConnection {
 
-    public double getRate (String currency1, String currency2) throws IOException {
-        String ratesHttpApi = System.getProperty("rate.http.api");
-        String ulrForRates = ratesHttpApi + currency1;
-        double getRate;
+	public double getRate(String currency1, String currency2) throws IOException {
+		String ratesHttpApi = System.getProperty("rate.http.api");
+		if (ratesHttpApi == null) {
+			System.out.print("ratesHttp = null\n");
+			ratesHttpApi = "https://api.exchangeratesapi.io/latest?base=";
+		}
 
-        URL url = new URL(ulrForRates);
-        HttpURLConnection request = (HttpURLConnection) url.openConnection();
-        request.connect();
+		String ulrForRates = ratesHttpApi + currency1;
+		double getRate;
 
-        JsonParser jp = new JsonParser();
-        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
-        JsonObject jsonobj = (JsonObject) root.getAsJsonObject().get("rates");
-        getRate = jsonobj.get(currency2).getAsDouble();
+		URL url = new URL(ulrForRates);
+		HttpURLConnection request = (HttpURLConnection) url.openConnection();
+		request.connect();
 
-        return getRate;
-    }
+		JsonParser jp = new JsonParser();
+		JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+		JsonObject jsonobj = (JsonObject) root.getAsJsonObject().get("rates");
+		getRate = jsonobj.get(currency2).getAsDouble();
+
+		return getRate;
+	}
 }

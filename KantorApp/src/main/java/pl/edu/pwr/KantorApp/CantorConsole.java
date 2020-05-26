@@ -48,6 +48,9 @@ public class CantorConsole {
 							case 1:
 								display.displayAllClients();
 								break;
+							case 2:
+								display.displayDeleteClient();
+								break;
 
 							case 9:
 								display.rightRate();

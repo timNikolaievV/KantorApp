@@ -71,34 +71,41 @@ public class ClientService {
 
 	}
 
-	public boolean withdrawalClientBalance(String currency, double amount, UUID id) {
+	public Double withdrawalClientBalance(String currency, double amount, UUID id) {
 		Client client = rep.getClientById(id);
 		if (client != null) {
 			double balance = client.getBalance(currency);
+			// todo throw exceptyion throw new Exception("Client not found");
+
 			if (amount <= balance) {
-				client.updateBalance(currency, -amount);
-				return true;
+				double newBalance = client.updateBalance(currency, -amount);
+				rep.saveClient(client);
+				return newBalance;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
-	public boolean depositClientBalance(String currency, double amount, UUID id) {
+	public double depositClientBalance(String currency, double amount, UUID id) {
 		Client client = rep.getClientById(id);
 		if (client != null) {
-			client.updateBalance(currency, amount);
-			return true;
-		}
+			double newBalance = client.updateBalance(currency, amount);
+			rep.saveClient(client);
+			return newBalance;
 
-		return false;
+		}
+//todo throw exceptyion throw new Exception("Client not found");
+		return 0.0;
 	}
-	/*
-	 * private void updateClientBalance(String currency, double amount, UUID id) {
-	 * 
-	 * Client client = rep.getClientById(id); if (client != null) {
-	 * client.updateBalance(currency, amount);
-	 * 
-	 * rep.saveClient(client); } }
-	 */
+
+	public Client getClientByLogin(String login) {
+		List<Client> clients = rep.getAllClients();
+		for (Client client : clients) {
+			if (login.equals(client.getLogin())) {
+				return client;
+			}
+		}
+		return null;
+	}
 }

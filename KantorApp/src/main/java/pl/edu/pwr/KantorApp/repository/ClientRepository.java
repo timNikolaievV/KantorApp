@@ -64,7 +64,7 @@ public class ClientRepository extends BaseRepository {
 		for (String pathName : pathNames) {
 			// Print the names of files and directories
 			if (pathName.contains(".json")) {
-				System.out.println(pathName);
+				//System.out.println(pathName);
 				String[] s = pathName.split("\\.");
 				UUID id = UUID.fromString(s[0]);
 				Client client = getClientById(id);
@@ -128,12 +128,13 @@ public class ClientRepository extends BaseRepository {
 
 	}
 
+
 	private String getClientFileName(UUID id) {
 		return getDataPath() + "\\Clients\\" + id.toString() + ".json";
 	}
 
 	private String getDeletedClientFileName(UUID id) {
-		return getDataPath() + "\\Client\\Deleted\\" + id.toString() + ".json";
+		return getDataPath() + "\\Clients\\Deleted\\" + id.toString() + ".json";
 	}
 
 }

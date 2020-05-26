@@ -3,11 +3,13 @@ package pl.edu.pwr.KantorApp.utils;
 import pl.edu.pwr.KantorApp.model.Client;
 import pl.edu.pwr.KantorApp.model.Trade;
 import pl.edu.pwr.KantorApp.model.User;
+import pl.edu.pwr.KantorApp.model.ValuteList;
 import pl.edu.pwr.KantorApp.services.ClientService;
 import pl.edu.pwr.KantorApp.services.UserService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -69,7 +71,6 @@ public class Display {
 		System.out.print("1. List of all clients\n");
 		System.out.print("2. Delete client\n");
 		System.out.print("3. Get transactions for date\n");
-
 
 		System.out.print("9. Check rates\n");
 		System.out.print("0. Exit");
@@ -135,8 +136,8 @@ public class Display {
 
 		displayTitle("Rate");
 
-		currency1 = inputLine("Enter currency1: ");
-		currency2 = inputLine("Enter currency2: ");
+		currency1 = inputValute("Enter currency1: ");
+		currency2 = inputValute("Enter currency2: ");
 
 		System.out.print("Your rate: " + userService.rightRate(currency1, currency2));
 		displayDelimiter();
@@ -161,9 +162,9 @@ public class Display {
 
 		displayTitle("Trade");
 
-		currency1 = inputLine("Enter currency1: ");
+		currency1 = inputValute("Enter currency1: ");
 
-		currency2 = inputLine("Enter currency2: ");
+		currency2 = inputValute("Enter currency2: ");
 
 		amount1 = inputDouble("Enter amount1: ");
 
@@ -190,18 +191,24 @@ public class Display {
 
 		displayTitle("Withdrawal");
 
-		currency = inputLine("Enter currency: ");
-		// TODO display new balance
-		amount = inputDouble("Enter amount: ");
+		currency = inputValute("Enter currency: ");
+		if (currency != null) {
+			double oldBalance = clientService.getClientBalances(currentUser.getId()).get(currency);
+			System.out.print("Current balance:" + oldBalance);
+			amount = inputDouble("\nEnter amount: ");
+			Double newBalance = clientService.withdrawalClientBalance(currency, amount, currentUser.getId());
 
-		if (clientService.withdrawalClientBalance(currency, amount, currentUser.getId()))
+			if (newBalance != null)
 
-		{
-			displayDelimiter("Withdrawal completed ");
+			{
+				displayDelimiter(newBalance + "\nWithdrawal completed ");
+
+			} else {
+				displayDelimiter("Not enough money");
+			}
 		} else {
-			displayDelimiter("Not enough money");
+			System.out.print("No such valute");
 		}
-
 		displayDelimiter();
 	}
 
@@ -211,26 +218,51 @@ public class Display {
 
 		displayTitle("Deposit");
 
-		currency = inputLine("Enter currency: ");
+		currency = inputValute("Enter currency: ");
 
 		amount = inputDouble("Enter amount: ");
 
-		clientService.depositClientBalance(currency, amount, currentUser.getId());
-//TODO display new balance
+		Double newBalance = clientService.depositClientBalance(currency, amount, currentUser.getId());
 
-		displayDelimiter("Deposit completed");
+		displayDelimiter(newBalance + "Deposit completed");
 
 		displayDelimiter();
 	}
 
 	public void displayAllClients() {
 		List<Client> clients = clientService.getAllClients();
-		displayDelimiter("All Users");
+		displayTitle("All Users");
 		for (Client client : clients) {
 			System.out.println(client.toString());
 		}
 		displayDelimiter();
 
+	}
+
+	public void displayAllValutes() {
+		displayTitle("List of supported valutes");
+		for (String s : ValuteList.getValutes()) {
+			System.out.println(s);
+		}
+		displayDelimiter();
+
+	}
+
+	public void displayDeleteClient() {
+		String login;
+		displayTitle("Delete client");
+		login = inputLine("Enter User Login: ");
+        Client client = clientService.getClientByLogin(login);
+		
+		
+		if (client != null) {
+			displayDelimiter("Client deleted");
+			clientService.deleteClient(client);
+		} else {
+			displayDelimiter("Client not found");
+
+		}
+		displayDelimiter();
 	}
 
 	private void displayDelimiter(String text) {
@@ -267,6 +299,20 @@ public class Display {
 		value = scan.nextDouble();
 
 		return value;
+	}
+
+	private String inputValute(String label) {
+		String value = inputLine(label).toUpperCase();
+
+		// Convert to stream and test it
+		boolean result = Arrays.stream(ValuteList.getValutes()).anyMatch(value::equals);
+
+		if (!result) {
+			System.out.println("Unsupported valute " + value + " \n");
+			return null;
+		} else {
+			return value.toUpperCase();
+		}
 	}
 
 }

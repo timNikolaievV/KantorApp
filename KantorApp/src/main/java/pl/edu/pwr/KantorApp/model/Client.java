@@ -34,9 +34,6 @@ public class Client extends User {
 
 		return true;
 	}
-	
-	 
-	 
 
 	/**
 	 * @return the balances
@@ -64,26 +61,23 @@ public class Client extends User {
 		return "Client [login=" + login + ", name=" + name + ", surname=" + surname + ", emailAddress=" + emailAddress
 				+ ", password=" + password + ", id=" + id + ", createdDate=" + createdDate + "]";
 	}
-	
+
 	public double getBalance(String currency) {
-		Double amount = balances.get(currency); 
+		Double amount = balances.get(currency);
 		return amount;
-		
+
 	}
 
-	
-	 
-	 
-	public void updateBalance(String currency, double deltaAmount) {
+	public double updateBalance(String currency, double deltaAmount) {
 		Double oldBalance = balances.get(currency);
 		if (oldBalance == null) {
 			balances.put(currency, deltaAmount);
-			return;
+			return deltaAmount;
 		}
 		double newBalance = oldBalance + deltaAmount;
 
 		balances.put(currency, newBalance);
-
+		return newBalance;
 	}
 
 }
